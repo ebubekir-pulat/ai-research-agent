@@ -1,0 +1,6 @@
+ollama
+langgraph
+pydantic
+scikit-learn
+pandas
+ddgs
