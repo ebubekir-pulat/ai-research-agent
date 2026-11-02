@@ -3,6 +3,5 @@ Local AI Research Agent
 Research, Analysis, Writing, Evaluation
 
 Task 1.
-Design a simple agent to generate research questions and a research objective, based on a given topic.
-This is done using a local LLM through Ollama. A pydantic model is defined and used for structured
-output of the agent.
+Design a simple agent to provide a summary report of web search results relating to a given user topic.
+The agent has access to a duckduckgo web search tool to search for snippets relevant to the topic.
