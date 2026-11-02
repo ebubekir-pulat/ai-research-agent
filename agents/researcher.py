@@ -59,6 +59,14 @@ class ResearchAgent:
 
         messages.append(response.message)
 
+        # Tool Call Debugging Info
+        tool_calls_debug = response.message.tool_calls or []
+
+        print(f"Number of tool calls: {len(tool_calls_debug)}")
+
+        for call in tool_calls_debug:
+            print(call.function.arguments)
+
         # Execute requested tools
         for tool_call in response.message.tool_calls or []:
 
