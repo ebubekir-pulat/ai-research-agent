@@ -11,4 +11,4 @@ summarises research into a report.
 
 Task 2.
 Analyst Agent that interprets information, identifies patterns, extracts insights, and identifies gaps
-in Research Agent's research.
+in Research Agent's research. Returns analysis results in a valid pydantic model form (ResearchAnalysis)

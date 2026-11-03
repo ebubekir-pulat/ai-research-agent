@@ -7,6 +7,7 @@ class ResearchAnalysis(BaseModel):
     common_themes: list[str]
     conflicting_information: list[str]
     knowledge_gaps: list[str]
+    recommendations: list[str]
     overall_assessment: str
 
 
@@ -15,7 +16,7 @@ class AnalystAgent:
     def __init__(self, model="llama3.1:8b"):
         self.model = model
 
-    def run(self, topic: str, research: str) -> ResearchAnalysis:
+    def run(self, topic: str, research: str, user_notes: str = "") -> ResearchAnalysis:
 
         response: ChatResponse = chat(
             model=self.model,
@@ -23,29 +24,61 @@ class AnalystAgent:
                 {
                     "role": "system",
                     "content": """
-                    You are an expert research analyst.
+                    You are a senior technical research analyst.
 
-                    Analyse the research provided.
+                    Your job is to critically analyse research findings
+                    and produce evidence-based conclusions.
 
-                    Your responsibilities:
-                    1. Extract important findings.
-                    2. Identify common themes.
-                    3. Identify conflicting information.
-                    4. Identify missing information.
-                    5. Produce an overall assessment.
+                    Follow these instructions:
 
-                    Only use information supported by the research.
-                    Do not invent facts.
+                    1. KEY FINDINGS
+                    - Extract specific, factual findings.
+                    - Include relevant technical details.
+                    - Avoid generic statements.
+                    - Do not simply repeat the research topic.
+
+                    2. COMMON THEMES
+                    - Identify patterns across different sources.
+                    - Explain why these patterns matter.
+
+                    3. CONFLICTING INFORMATION
+                    - Identify genuinely contradictory claims.
+                    - Explain the nature of the disagreement.
+                    - Do not list different technologies as conflicts.
+
+                    4. KNOWLEDGE GAPS
+                    - Identify important information missing
+                        from the research.
+                    - Consider missing benchmarks, specifications,
+                        comparisons and supporting evidence.
+
+                    5. RECOMMENDATIONS AND OVERALL ASSESSMENT
+                    - Compare the available ideas/options.
+                    - Discuss strengths and weaknesses.
+                    - Provide practical conclusions.
+                    - Explain where evidence is insufficient.
+
+                    IMPORTANT RULES:
+
+                    - Only make claims supported by the research.
+                    - Never invent benchmarks, specifications or capabilities.
+                    - Distinguish facts from assumptions.
+                    - If evidence is insufficient, explicitly say so.
+                    - Avoid vague statements such as
+                    "the technology is diverse and evolving".
+                    - Prioritise technical depth over generic summaries.
                     """
                 },
                 {
                     "role": "user",
                     "content": f"""
-                    Research topic:
+                    RESEARCH TOPIC:
                     {topic}
 
-                    Research findings:
+                    RESEARCH FINDINGS:
                     {research}
+
+                    {user_notes}
                     """
                 }
             ],
