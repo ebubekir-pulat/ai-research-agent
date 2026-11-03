@@ -78,7 +78,8 @@ class AnalystAgent:
                     RESEARCH FINDINGS:
                     {research}
 
-                    {user_notes}
+                    USER ANALYSIS INSTRUCTIONS:
+                    {user_notes if user_notes else "No additional instructions."}
                     """
                 }
             ],
