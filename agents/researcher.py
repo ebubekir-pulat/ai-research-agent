@@ -122,9 +122,10 @@ class ResearchAgent:
                 {
                     "role": "user",
                     "content": """
-                    You have reached the research iteration limit.
+                    You have completed your research.
                     Summarise all the research collected so far.
                     Do not request additional searches.
+                    Do not make up information (hallucinate).
                     """
                 }
             ]
