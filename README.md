@@ -7,3 +7,8 @@ Design a simple research agent to provide a summary report of web search results
 The agent has access to a duckduckgo web search tool to search for snippets relevant to the topic.
 Research agent works in a loop until it decides no more tool calls (web searches) wanted. Then,
 summarises research into a report.
+
+
+Task 2.
+Analyst Agent that interprets information, identifies patterns, extracts insights, and identifies gaps
+in Research Agent's research.

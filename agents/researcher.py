@@ -5,7 +5,7 @@ from tools.search import web_search
 
 class ResearchAgent:
 
-    def __init__(self, model="qwen2.5:3b", max_iterations=10):
+    def __init__(self, model="llama3.1:8b", max_iterations=10):
         self.model = model
         self.max_iterations = max_iterations
 
