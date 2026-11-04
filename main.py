@@ -1,21 +1,34 @@
-from agents.researcher import ResearchAgent
-from agents.analyst import AnalystAgent
+from graph import build_graph
 
-available_models = ["qwen2.5:3b", "qwen2.5:7b", "llama3.1:8b"]
-model = available_models[2]
+# Note: available_models = ["qwen2.5:3b", "qwen2.5:7b", "llama3.1:8b"]
 
-researcher = ResearchAgent(model=model)
-analyst = AnalystAgent(model=model)
+app = build_graph()
 
 topic = input("Enter a research topic: ")
 
-# Stage 1: Research
-research = researcher.run(topic)
+user_notes = input("Additional analysis instructions: ")
 
-# Stage 2: Analysis
-analysis = analyst.run(topic, research)
+initial_state = {
+    "topic": topic,
+    "user_notes": user_notes,
+    "research": "",
+    "research_focus": "",
+    "analysis": None,
+    "research_rounds": 0
+}
 
-print("\n===== RESEARCH ANALYSIS =====")
+# Execute graph
+result = app.invoke(initial_state)
+
+print("\n===== GRAPH STATE =====")
+
+print("Research rounds:", result["research_rounds"])
+print("Research length:", len(result["research"]))
+print("Research focus:", result["research_focus"])
+
+analysis = result["analysis"]
+
+print("\n===== FINAL RESEARCH ANALYSIS =====")
 
 print("\nKey findings:")
 for finding in analysis.key_findings:
@@ -25,13 +38,13 @@ print("\nCommon themes:")
 for theme in analysis.common_themes:
     print("-", theme)
 
-print("\nConflicting information:")
-for conflict in analysis.conflicting_information:
-    print("-", conflict)
-
 print("\nKnowledge gaps:")
 for gap in analysis.knowledge_gaps:
     print("-", gap)
+
+print("\nRecommendations:")
+for recommendation in analysis.recommendations:
+    print("-", recommendation)
 
 print("\nOverall assessment:")
 print(analysis.overall_assessment)

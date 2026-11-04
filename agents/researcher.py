@@ -9,7 +9,7 @@ class ResearchAgent:
         self.model = model
         self.max_iterations = max_iterations
 
-    def run(self, topic: str):
+    def run(self, topic: str, additional_context: str = ""):
 
         messages = [
             {
@@ -37,11 +37,24 @@ class ResearchAgent:
 
                 Do not provide your final answer until you have
                 completed your research.
+
+                When additional research focus is provided:
+
+                1. Prioritise the identified knowledge gaps.
+                2. Avoid repeating previous searches.
+                3. Investigate missing information specifically.
+                4. Use alternative search queries if previous
+                searches returned no results.
                 """
             },
             {
                 "role": "user",
-                "content": f"Research topic: {topic}"
+                "content": f"""
+                Research topic: {topic}
+
+                Additional research focus:
+                {additional_context if additional_context else "No additional focus."}
+                """
             }
         ]
 
