@@ -18,3 +18,8 @@ Task 3.
 Turn Python agent system into a LangGraph, where the agents are nodes, and there is a conditional edge
 from the analysis agent which either instructs the research agent for more research, or finishes the graph and
 reaches the end node.
+
+
+Task 4.
+Implement WriterAgent: Turns the research and analysis into a professional Markdown report. Last step in
+agent graph at this point.

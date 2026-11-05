@@ -14,12 +14,17 @@ initial_state = {
     "research": "",
     "research_focus": "",
     "analysis": None,
-    "research_rounds": 0
+    "research_rounds": 0,
+    "report": ""
 }
 
 # Execute graph
 result = app.invoke(initial_state)
 
+print("\n===== FINAL RESEARCH REPORT =====\n")
+print(result["report"])
+
+"""
 print("\n===== GRAPH STATE =====")
 
 print("Research rounds:", result["research_rounds"])
@@ -48,3 +53,4 @@ for recommendation in analysis.recommendations:
 
 print("\nOverall assessment:")
 print(analysis.overall_assessment)
+"""

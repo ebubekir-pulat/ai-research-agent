@@ -1,22 +1,22 @@
 from typing import TypedDict, Literal
 from agents.researcher import ResearchAgent
 from agents.analyst import ResearchAnalysis, AnalystAgent
+from agents.writer import WriterAgent
 from langgraph.graph import StateGraph, START, END
 
 class ResearchState(TypedDict):
     topic: str
     user_notes: str
-
     research: str
     research_focus: str
-
     analysis: ResearchAnalysis | None
-
     research_rounds: int
+    report:str
 
 
 researcher = ResearchAgent(model="llama3.1:8b")
 analyst = AnalystAgent(model="llama3.1:8b")
+writer = WriterAgent(model="llama3.1:8b")
 
 
 def research_node(state: ResearchState) -> dict:
@@ -60,21 +60,33 @@ def analysis_node(state: ResearchState) -> dict:
 
 def should_research_more(
     state: ResearchState
-) -> Literal["research", "finish"]:
+) -> Literal["research", "write"]:
 
     analysis = state["analysis"]
 
     # Maximum of two research rounds
     if state["research_rounds"] >= 2:
-        return "finish"
+        return "write"
 
     if analysis and analysis.knowledge_gaps:
         print("\nKnowledge gaps identified.")
         print("Returning to Research Agent...")
-
         return "research"
 
-    return "finish"
+    return "write"
+
+
+def writer_node(state: ResearchState) -> dict:
+    print("\n===== WRITER NODE =====")
+
+    report = writer.run(
+        topic=state["topic"],
+        research=state["research"],
+        analysis=state["analysis"],
+        user_notes=state["user_notes"]
+    )
+
+    return {"report": report}
 
 
 def build_graph():
@@ -83,6 +95,7 @@ def build_graph():
     # Register nodes
     workflow.add_node("research", research_node)
     workflow.add_node("analysis", analysis_node)
+    workflow.add_node("writer", writer_node)
 
     # Define workflow
     workflow.add_edge(START, "research")
@@ -94,9 +107,11 @@ def build_graph():
         should_research_more,
         {
             "research": "research",
-            "finish": END
+            "write": "writer"
         }
     )
+
+    workflow.add_edge("writer", END)
 
     # Compile
     return workflow.compile()
