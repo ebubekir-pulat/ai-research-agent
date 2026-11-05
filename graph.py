@@ -3,12 +3,18 @@ from agents.researcher import ResearchAgent
 from agents.analyst import ResearchAnalysis, AnalystAgent
 from agents.writer import WriterAgent
 from langgraph.graph import StateGraph, START, END
+from ml.classifier import ResearchClassifier
+from collections import Counter
+import re
+from pathlib import Path
+from datetime import datetime
 
 class ResearchState(TypedDict):
     topic: str
     user_notes: str
     research: str
     research_focus: str
+    research_categories: list[dict]
     analysis: ResearchAnalysis | None
     research_rounds: int
     report:str
@@ -17,6 +23,8 @@ class ResearchState(TypedDict):
 researcher = ResearchAgent(model="llama3.1:8b")
 analyst = AnalystAgent(model="llama3.1:8b")
 writer = WriterAgent(model="llama3.1:8b")
+classifier = ResearchClassifier()
+classifier.train()
 
 
 def research_node(state: ResearchState) -> dict:
@@ -40,13 +48,51 @@ def research_node(state: ResearchState) -> dict:
     }
 
 
+def classify_node(state: ResearchState) -> dict:
+    print("\n===== ML CLASSIFICATION NODE =====")
+
+    # Split research into individual sentences
+    sentences = re.split(r'(?<=[.!?])\s+', state["research"])
+
+    classified = []
+
+    for sentence in sentences:
+        sentence = sentence.strip("- •\t ")
+
+        if len(sentence) > 20:
+            result = classifier.predict(sentence)
+
+            classified.append({
+                "text": sentence,
+                **result
+            })
+
+    counts = Counter(
+        item["category"] for item in classified
+    )
+
+    print("ML category counts:", dict(counts))
+
+    return {"research_categories": classified}
+
+
 def analysis_node(state: ResearchState) -> dict:
 
     print("\n===== ANALYSIS NODE =====")
 
+    classifications = "\n".join(
+        f"- {item['category']}: {item['text']}"
+        for item in state.get("research_categories", [])
+    )
+
     analysis = analyst.run(
         topic=state["topic"],
-        research=state["research"],
+        research=(
+            state["research"]
+            + "\n\nML CLASSIFICATION HINTS "
+            "(automatically generated; may be inaccurate):\n"
+            + classifications
+        ),
         user_notes=state["user_notes"]
     )
 
@@ -96,10 +142,12 @@ def build_graph():
     workflow.add_node("research", research_node)
     workflow.add_node("analysis", analysis_node)
     workflow.add_node("writer", writer_node)
+    workflow.add_node("classify", classify_node)
 
     # Define workflow
     workflow.add_edge(START, "research")
-    workflow.add_edge("research", "analysis")
+    workflow.add_edge("research", "classify")
+    workflow.add_edge("classify", "analysis")
 
     # Conditional routing
     workflow.add_conditional_edges(
