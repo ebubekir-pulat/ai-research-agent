@@ -1,29 +1,69 @@
-Local AI Research Agent
+Local Research Agent
 
-Research, Analysis, Writing, Evaluation
+A multi-agent AI research system built with Python, Ollama, LangGraph, and scikit-learn.
 
-Task 1.
-Design a simple research agent to provide a summary report of web search results relating to a given user topic.
-The agent has access to a duckduckgo web search tool to search for snippets relevant to the topic.
-Research agent works in a loop until it decides no more tool calls (web searches) wanted. Then,
-summarises research into a report.
+Features
 
+Research Agent: Searches the web and gathers information.
 
-Task 2.
-Analyst Agent that interprets information, identifies patterns, extracts insights, and identifies gaps
-in Research Agent's research. Returns analysis results in a valid pydantic model form (ResearchAnalysis)
+ML Classifier: Uses TF-IDF and Logistic Regression to categorise research findings.
 
+Analyst Agent: Identifies key findings, themes, knowledge gaps, and recommendations.
 
-Task 3.
-Turn Python agent system into a LangGraph, where the agents are nodes, and there is a conditional edge
-from the analysis agent which either instructs the research agent for more research, or finishes the graph and
-reaches the end node.
+Writer Agent: Generates a structured Markdown research report.
 
+LangGraph: Orchestrates the agents and manages iterative research.
 
-Task 4.
-Implement WriterAgent: Turns the research and analysis into a professional Markdown report. Last step in
-agent graph at this point.
+Architecture
 
+Research Agent → ML Classifier → Analyst Agent → Writer Agent → Markdown Report
 
-Task 5.
-Add ML Text ResearchClassifier
+Technologies
+
+Python
+
+Ollama
+
+LangGraph
+
+scikit-learn
+
+TF-IDF
+
+Logistic Regression
+
+DuckDuckGo Search
+
+Run locally
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+Make sure Ollama is running and the required model is available:
+
+ollama pull llama3.1:8b
+
+Run the project:
+
+python3 main.py
+
+Generated reports are saved in the reports/ directory.
+
+ML component
+
+The classifier uses a small labelled dataset to categorize research text into:
+
+Hardware
+
+Tool calling
+
+Performance
+
+Agentic workflows
+
+It uses a scikit-learn Pipeline containing TF-IDF vectorization and Logistic Regression.
+
+Limitations
+
+The training dataset is intentionally small for this learning project. Classification predictions and confidence scores are experimental and should not be treated as verified facts.

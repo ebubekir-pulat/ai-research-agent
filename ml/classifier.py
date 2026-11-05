@@ -30,7 +30,7 @@ class ResearchClassifier:
         confidence = max(probabilities)
 
         return {
-            "category": prediction,
+            "category": str(prediction),
             "confidence": round(float(confidence), 3)
         }
 
