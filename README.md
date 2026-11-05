@@ -23,3 +23,7 @@ reaches the end node.
 Task 4.
 Implement WriterAgent: Turns the research and analysis into a professional Markdown report. Last step in
 agent graph at this point.
+
+
+Task 5.
+Add ML Text ResearchClassifier
